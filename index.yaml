@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  guestbook:
+  - apiVersion: v2
+    appVersion: v1.0.0
+    created: "2022-03-03T04:56:42.063150343Z"
+    digest: 18251dce9f8b534210f2b5229cef4a0612f2318933c0e227ce937b8b973794c5
+    name: guestbook
+    type: application
+    urls:
+    - https://patrickdappollonio.github.io/kubernetes-guestbook/guestbook-1.0.0.tgz
+    version: 1.0.0
+generated: "2022-03-03T04:56:42.061534811Z"
