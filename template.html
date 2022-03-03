@@ -1,0 +1,83 @@
+<html>
+
+<head>
+  <title>Guestbook</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+  <style type="text/css">
+    [v-cloak] {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="width: 50%; margin-left: 20px" id="app">
+    <h2>Guestbook</h2>
+    <h4 v-if="error" v-cloak>
+      <span class="label label-danger">Error: {{error}}</span>
+    </h4>
+    <form @submit.prevent="submit">
+      <fieldset>
+        <input v-model="currentMessage" placeholder="Messages" class="form-control" type="text" name="input"><br>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </fieldset>
+    </form>
+    <div>
+      <div v-for="msg in messages" :key="messages" v-cloak>
+        {{msg}}
+      </div>
+    </div>
+  </div>
+
+  <script src="//unpkg.com/vue@3"></script>
+  <script>
+    Vue.createApp({
+      data () {
+        return {
+          currentMessage: "",
+          messages: [],
+          error: null
+        };
+      },
+
+      methods: {
+        submit () {
+          this.messages.push(this.currentMessage);
+          this.currentMessage = "";
+
+          fetch("/guestbook?cmd=set&value=" + encodeURIComponent(this.messages.join(","))).then(async response => {
+            if (!response.ok) {
+              let data = await response.json();
+              this.error = data.error;
+              console.error(data.error);
+            }
+          }).catch(error => {
+            this.error = error.error;
+            console.error(error.error);
+          });
+        }
+      },
+
+      mounted () {
+        fetch("/guestbook?cmd=get").then(async response => {
+          const contents = await response.json();
+
+          if (!response.ok) {
+            this.error = contents.error;
+            console.error(contents.error)
+            return
+          }
+
+          if (contents.data) {
+            this.messages = contents.data.split(",");
+          }
+        }).catch(error => {
+          this.error = error.error;
+          console.error(error.error)
+        });
+      }
+    }).mount("#app");
+  </script>
+</body>
+
+</html>

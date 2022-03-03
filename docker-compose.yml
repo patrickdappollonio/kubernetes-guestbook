@@ -1,0 +1,51 @@
+# This is a sample docker-compose.yaml file with a hardcoded password. You can
+# change the services.guestbook.environment fields to point to your preferred
+# backend. Shipped with this project are two supported backends: Redis and
+# MSSQL Server. New backends can be added by implementing the storage/storage.go
+# interface.
+
+version: '3.8'
+
+services:
+  redis:
+    container_name: redis
+    image: redis:6.2-alpine
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    command: "redis-server --save 20 1 --loglevel warning --requirepass 'K3Sknn7e=p[w6Kf?'"
+    volumes:
+      - redis:/data
+
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+    restart: unless-stopped
+    ports:
+      - '1433:1433'
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=K3Sknn7e=p[w6Kf?
+    volumes:
+      - sqlserver:/var/opt/mssql
+
+  guestbook:
+    depends_on:
+      - sqlserver
+      - redis
+    container_name: guestbook
+    build: .
+    environment:
+      - PORT=8080
+      - MSSQL_CONNSTRING=sqlserver://sa:K3Sknn7e%3Dp%5Bw6Kf%3F@sqlserver:1433
+      # - REDIS_HOST=redis:6379
+      # - REDIS_PASS=K3Sknn7e=p[w6Kf?
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+
+volumes:
+  redis:
+    driver: local
+  sqlserver:
+    driver: local
