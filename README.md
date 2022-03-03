@@ -21,9 +21,31 @@ As a prerequisite, you need a preexistent storage backend. Currently supported: 
 
 Creating one in Kubernetes is out of the scope of this document. As an example though, the [`docker-compose.yml` file](docker-compose.yml) will show you its usage with different database backends.
 
+#### Helm chart
+
+In order to use this Helm chart, you can install the repository first:
+
+```
+helm repo add guestbook https://patrickdappollonio.github.io/kubernetes-guestbook/
+```
+
+You can then install `guestbook/guestbook`, or even render it locally:
+
+```
+helm install my-release guestbook/guestbook
+```
+```
+helm template guestbook/guestbook
+```
+
+Some of the configuration options you can pass are documented in the [`charts/guestbook/values.yaml` file](charts/guestbook/values.yaml). Specifically, you must configure a backend, either Redis or MS SQL Server.
+
 #### Kubernetes Deployment
 
 The following example shows how to deploy the application to a Kubernetes cluster and use Redis as the storage backend. For other backends, you might need to adjust the `ConfigMap` or `Secret` used.
+
+<details>
+<summary>Example generic code</summary>
 
 ```yaml
 apiVersion: v1
@@ -81,6 +103,7 @@ spec:
         ports:
         - containerPort: 80
 ```
+</details>
 
 In case you want to ensure you have some feedback if the application cannot connect to Redis, you can use an `initContainer`:
 
