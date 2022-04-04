@@ -2,12 +2,21 @@ apiVersion: v1
 entries:
   guestbook:
   - apiVersion: v2
+    appVersion: v1.0.1
+    created: "2022-04-04T19:28:19.965475337Z"
+    digest: 88cf4ba67b598e0368226757befb982f209e86f7c491783ba5ac116e92f30c55
+    name: guestbook
+    type: application
+    urls:
+    - https://patrickdappollonio.github.io/kubernetes-guestbook/guestbook-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
     appVersion: v1.0.0
-    created: "2022-03-03T04:59:07.413973781Z"
+    created: "2022-04-04T19:28:19.963787322Z"
     digest: f8e81a252e247fc2fc29b8a3938066e6c4bd5a75a95f74f22de588ed87d13247
     name: guestbook
     type: application
     urls:
     - https://patrickdappollonio.github.io/kubernetes-guestbook/guestbook-1.0.0.tgz
     version: 1.0.0
-generated: "2022-03-03T04:59:07.41320737Z"
+generated: "2022-04-04T19:28:19.962097306Z"
