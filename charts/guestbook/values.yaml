@@ -5,6 +5,12 @@ image:
   pullPolicy: IfNotPresent
   tag: latest
 
+
+# Add your custom secret to the deployment here. The
+# secret must be env var key=value pairs.
+secretEnvOverride: ""
+
+# Manually specify all values for the backend
 backend:
   redis:
     host: ""
@@ -12,19 +18,24 @@ backend:
   mssql:
     connstring: ""
 
+# Configure image pull secrets
 imagePullSecrets: []
+
+# Override deployment name
 nameOverride: ""
 fullnameOverride: ""
 
+# Define if the deployment needs service account data
 serviceAccount:
   create: false
   annotations: {}
   name: ""
 
+# Pod specific settings
 podAnnotations: {}
-
 podSecurityContext: {}
 
+# Configure all security contexts
 securityContext:
   capabilities:
     drop:
@@ -33,10 +44,12 @@ securityContext:
   runAsNonRoot: true
   runAsUser: 1000
 
+# Define what kind of service it'll be used
 service:
   type: ClusterIP
   port: 8080
 
+# Ingress settings
 ingress:
   enabled: false
   className: ""
@@ -48,6 +61,7 @@ ingress:
           pathType: ImplementationSpecific
   tls: []
 
+# Configure resource limits
 resources:
   limits:
     cpu: 200m
@@ -56,14 +70,18 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# Configure horizontal pod autoscaler settings
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 100
   targetCPUUtilizationPercentage: 80
 
+# Define a node selector for the deployment
 nodeSelector: {}
 
+# Define tolerations for the deployment
 tolerations: []
 
+# Define affinity for the deployment
 affinity: {}
