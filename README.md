@@ -4,7 +4,7 @@ This is a frontend copy of the Kubernetes Guestbook official application, with a
 
 * **It does not use Angular for the frontend** and instead, uses VueJS 3.
 * **It does not come with Redis bundled** and instead, it allows you to use different "storage backends":
-  * **Redis** via a third party host, by setting `$REDIS_HOST` with the format `host:port`, and `$REDIS_PASS` in the environment.
+  * **Redis** via a third party host, by setting `$REDIS_HOST` with the format `host:port`, `$REDIS_PASS`, `$REDIS_USE_TLS` (`false` by default) and `$REDIS_SERVER_NAME` in the environment.
   * **MSSQL Server** via a third party host, by setting `$MSSQL_CONNSTRING` in the environment. This must be [a supported connection string from its driver](https://github.com/denisenkom/go-mssqldb#the-connection-string-can-be-specified-in-one-of-three-formats). The quick option is to use a connection string like this: `sqlserver://username:password@hostname:1433`.
 * **It uses a key mechanism to have multiple, different copies of the Guestbook** in a single environment.
   * Set a key by setting the `$KEY` environment variable. Be aware that different "storage backends" will have different validations for key names. Currently, both Redis and MSSQL require alphabetic characters only (no numbers, all lowercase).

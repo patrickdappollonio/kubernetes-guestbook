@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"strings"
 
@@ -12,14 +13,31 @@ type Redis struct {
 	client *redis.Client
 }
 
-func NewRedis(host, password string) *Redis {
-	rdb := redis.NewClient(&redis.Options{
+func NewRedis(host, password, serverName string, hasTLS bool) (*Redis, error) {
+	opts := &redis.Options{
 		Addr:     host,
 		Password: password,
 		DB:       0,
-	})
+	}
 
-	return &Redis{client: rdb}
+	if serverName != "" && !hasTLS {
+		return nil, fmt.Errorf("server name has been set, however TLS connectivity is disabled")
+	}
+
+	if hasTLS {
+		if serverName != "" {
+			opts.TLSConfig = &tls.Config{
+				MinVersion: tls.VersionTLS12,
+				ServerName: serverName,
+			}
+		} else {
+			opts.TLSConfig = &tls.Config{
+				MinVersion: tls.VersionTLS12,
+			}
+		}
+	}
+
+	return &Redis{client: redis.NewClient(opts)}, nil
 }
 
 func (r *Redis) Bootstrap(key string) error {
@@ -28,6 +46,8 @@ func (r *Redis) Bootstrap(key string) error {
 		if err == redis.Nil {
 			return r.client.Set(context.Background(), key, "", 0).Err()
 		}
+
+		return err
 	}
 
 	return nil
@@ -58,5 +78,5 @@ func (r *Redis) IsValidKey(key string) error {
 }
 
 func (r *Redis) ConfigString() string {
-	return fmt.Sprintf("Connecting to redis server: %q", r.client.Options().Addr)
+	return fmt.Sprintf("Redis server: %q", r.client.Options().Addr)
 }
