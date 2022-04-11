@@ -1,10 +1,10 @@
 replicaCount: 1
 
+# Replace image values
 image:
   repository: ghcr.io/patrickdappollonio/kubernetes-guestbook
   pullPolicy: IfNotPresent
   tag: latest
-
 
 # Add your custom secret to the deployment here. The
 # secret must be env var key=value pairs.
@@ -85,3 +85,6 @@ tolerations: []
 
 # Define affinity for the deployment
 affinity: {}
+
+# Sidecar containers
+sidecarContainers: []
