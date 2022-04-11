@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -15,6 +16,15 @@ func allSet(key ...string) bool {
 		}
 	}
 	return true
+}
+
+func boolEnv(key string, defval bool) bool {
+	if s := strings.TrimSpace(os.Getenv(key)); s != "" {
+		if b, err := strconv.ParseBool(s); err == nil {
+			return b
+		}
+	}
+	return defval
 }
 
 func envdefault(key, defval string) string {

@@ -37,9 +37,9 @@ services:
     build: .
     environment:
       - PORT=8080
-      - MSSQL_CONNSTRING=sqlserver://sa:K3Sknn7e%3Dp%5Bw6Kf%3F@sqlserver:1433
-      # - REDIS_HOST=redis:6379
-      # - REDIS_PASS=K3Sknn7e=p[w6Kf?
+      # - MSSQL_CONNSTRING=sqlserver://sa:K3Sknn7e%3Dp%5Bw6Kf%3F@sqlserver:1433
+      - REDIS_HOST=redis:6379
+      - REDIS_PASS=K3Sknn7e=p[w6Kf?
     ports:
       - '8080:8080'
     restart: unless-stopped

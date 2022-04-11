@@ -13,8 +13,8 @@ type MSSQL struct {
 	database   *sql.DB
 }
 
-func NewMSSQL(connectionString string) *MSSQL {
-	return &MSSQL{connString: connectionString}
+func NewMSSQL(connectionString string) (*MSSQL, error) {
+	return &MSSQL{connString: connectionString}, nil
 }
 
 func (s *MSSQL) Bootstrap(key string) error {
@@ -92,5 +92,5 @@ func (r *MSSQL) IsValidKey(key string) error {
 }
 
 func (r *MSSQL) ConfigString() string {
-	return "Connecting to SQL Server: " + obfuscate(r.connString, 3)
+	return "SQL Server: " + obfuscate(r.connString, 3)
 }

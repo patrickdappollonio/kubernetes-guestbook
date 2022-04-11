@@ -22,19 +22,26 @@ var (
 
 func main() {
 	var client storage.Storage
+	var clienterr error
 
 	switch {
 	case allSet("REDIS_HOST", "REDIS_PASS"):
-		client = storage.NewRedis(
+		client, clienterr = storage.NewRedis(
 			os.Getenv("REDIS_HOST"),
 			os.Getenv("REDIS_PASS"),
+			os.Getenv("REDIS_SERVER_NAME"),
+			boolEnv("REDIS_USE_TLS", false),
 		)
 	case allSet("MSSQL_CONNSTRING"):
-		client = storage.NewMSSQL(
+		client, clienterr = storage.NewMSSQL(
 			os.Getenv("MSSQL_CONNSTRING"),
 		)
 	default:
 		log.Fatal("Error: No storage backend configured")
+	}
+
+	if clienterr != nil {
+		log.Fatalf("Error while setting up client: %s", clienterr)
 	}
 
 	if err := client.IsValidKey(key); err != nil {
@@ -42,10 +49,10 @@ func main() {
 	}
 
 	if err := client.Bootstrap(key); err != nil {
-		log.Fatalf("Error: %s", err)
+		log.Fatalf("Error while bootstrapping client: %s", err)
 	}
 
-	log.Printf("Backend configuration: %s", client.ConfigString())
+	log.Printf("Client boostrapped -- Backend configuration: %s", client.ConfigString())
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
