@@ -88,3 +88,7 @@ affinity: {}
 
 # Sidecar containers
 sidecarContainers: []
+
+# Volumes and volume mounts
+extraVolumes: []
+extraVolumeMounts: []
