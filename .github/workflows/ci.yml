@@ -57,6 +57,15 @@ jobs:
           cat charts/guestbook/Chart.yaml
         shell: bash
 
+      - name: Install kubeval
+        uses: lra/setup-kubeval@v1
+        with:
+          version: v0.16.1
+
+      - name: Validate generated Helm YAML
+        run: |
+          helm template guestbook charts/guestbook/ | kubeval --strict
+
       - name: Lint and Pack Helm chart
         run: |
           helm lint charts/guestbook/
