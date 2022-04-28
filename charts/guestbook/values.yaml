@@ -101,3 +101,6 @@ sidecarContainers: []
 # Volumes and volume mounts
 extraVolumes: []
 extraVolumeMounts: []
+
+# Init containers
+initContainers: []
