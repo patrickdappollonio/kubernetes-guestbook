@@ -1,22 +1,31 @@
+# Define an initial amount of replicas of this guestbook.
 replicaCount: 1
 
-# Replace image values
+# Replace image values with customized versions.
 image:
   repository: ghcr.io/patrickdappollonio/kubernetes-guestbook
   pullPolicy: IfNotPresent
   tag: latest
 
-# Add your custom secret to the deployment here. The
-# secret must be env var key=value pairs.
+# BYOSecret: create and bring your own Kubernetes secret
+# by providing its name. The contents of the secret are
+# environment variables attached as-is to the application.
 secretEnvOverride: ""
 
-# Manually specify all values for the backend
+# Manually specify all values for the backend. Ensure
+# either redis or mssql is provided.
 backend:
   redis:
+    enabled: false
     host: ""
     pass: ""
   mssql:
-    connstring: ""
+    enabled: false
+    username: ""
+    password: ""
+    host: ""
+    instance: ""
+    database: ""
 
 # Configure image pull secrets
 imagePullSecrets: []

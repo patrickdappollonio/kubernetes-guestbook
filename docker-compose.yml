@@ -19,13 +19,16 @@ services:
 
   sqlserver:
     container_name: sqlserver
-    image: mcr.microsoft.com/mssql/server:2019-CU15-ubuntu-20.04
+    image: mcmoe/mssqldocker:v2017.CU24.0
     restart: unless-stopped
     ports:
       - '1433:1433'
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=K3Sknn7e=p[w6Kf?
+      - MSSQL_DB=guestbook
+      - MSSQL_USER=guestbookuser
+      - MSSQL_PASSWORD=Y9LhDa]2gz>U"#Dc
     volumes:
       - sqlserver:/var/opt/mssql
 
@@ -37,9 +40,12 @@ services:
     build: .
     environment:
       - PORT=8080
-      # - MSSQL_CONNSTRING=sqlserver://sa:K3Sknn7e%3Dp%5Bw6Kf%3F@sqlserver:1433
-      - REDIS_HOST=redis:6379
-      - REDIS_PASS=K3Sknn7e=p[w6Kf?
+      - SQL_USERNAME=guestbookuser
+      - SQL_PASSWORD=Y9LhDa]2gz>U"#Dc
+      - SQL_HOST=sqlserver:1433
+      - SQL_DATABASE=guestbook
+      # - REDIS_HOST=redis:6379
+      # - REDIS_PASS=K3Sknn7e=p[w6Kf?
     ports:
       - '8080:8080'
     restart: unless-stopped

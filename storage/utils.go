@@ -18,7 +18,7 @@ func alphaOnly(s string) bool {
 
 func obfuscate(s string, length int) string {
 	if len(s) > length {
-		return s[:length] + strings.Repeat("*", len(s)-length) + " (len: " + strconv.Itoa(len(s)) + ")"
+		return s[:length] + strings.Repeat("*", len(s)-length) + " [len: " + strconv.Itoa(len(s)) + "]"
 	}
 
 	return s

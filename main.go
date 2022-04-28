@@ -32,9 +32,13 @@ func main() {
 			os.Getenv("REDIS_SERVER_NAME"),
 			boolEnv("REDIS_USE_TLS", false),
 		)
-	case allSet("MSSQL_CONNSTRING"):
+	case allSet("SQL_USERNAME", "SQL_PASSWORD", "SQL_HOST", "SQL_DATABASE"):
 		client, clienterr = storage.NewMSSQL(
-			os.Getenv("MSSQL_CONNSTRING"),
+			os.Getenv("SQL_USERNAME"),
+			os.Getenv("SQL_PASSWORD"),
+			os.Getenv("SQL_HOST"),
+			os.Getenv("SQL_INSTANCE"),
+			os.Getenv("SQL_DATABASE"),
 		)
 	default:
 		log.Fatal("Error: No storage backend configured")

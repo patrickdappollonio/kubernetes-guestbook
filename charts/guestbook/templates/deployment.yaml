@@ -39,13 +39,13 @@ spec:
                 configMapKeyRef:
                   name: {{ include "guestbook.fullname" . }}-cm
                   key: PORT
-          {{- if or (and .Values.backend.redis.host .Values.backend.redis.pass) .Values.backend.mssql.connstring .Values.secretEnvOverride }}
+          {{- if or .Values.backend.redis.enabled .Values.backend.mssql.enabled .Values.secretEnvOverride }}
           envFrom:
             {{- if .Values.secretEnvOverride }}
             - secretRef:
                 name: {{ .Values.secretEnvOverride | quote }}
             {{- end }}
-            {{- if or (and .Values.backend.redis.host .Values.backend.redis.pass) .Values.backend.mssql.connstring }}
+            {{- if or .Values.backend.redis.enabled .Values.backend.mssql.enabled }}
             - secretRef:
                 name: "{{ include "guestbook.fullname" . }}-secret"
             {{- end }}
