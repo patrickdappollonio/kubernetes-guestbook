@@ -4,13 +4,22 @@ This is a frontend copy of the Kubernetes Guestbook official application, with a
 
 * **It does not use Angular for the frontend** and instead, uses VueJS 3.
 * **It does not come with Redis bundled** and instead, it allows you to use different "storage backends":
-  * **Redis** via a third party host, by setting `$REDIS_HOST` with the format `host:port`, `$REDIS_PASS`, `$REDIS_USE_TLS` (`false` by default) and `$REDIS_SERVER_NAME` in the environment.
-  * **MSSQL Server** via a third party host, by setting `$MSSQL_CONNSTRING` in the environment. This must be [a supported connection string from its driver](https://github.com/denisenkom/go-mssqldb#the-connection-string-can-be-specified-in-one-of-three-formats). The quick option is to use a connection string like this: `sqlserver://username:password@hostname:1433`.
+  * **Redis** via a third party host, by setting the following options:
+    * `$REDIS_HOST` with the format `host:port` for host and port;
+    * `$REDIS_PASS` for the potential password (or not set if no password is needed);
+    * `$REDIS_USE_TLS` to enable TLS (`false` by default); and
+    * `$REDIS_SERVER_NAME` in case the TLS uses SNI (or not set if SNI is not needed)
+  * **MSSQL Server** via a third party host, by setting the following options:
+    * `$SQL_USERNAME` for the username;
+    * `$SQL_PASSWORD` for the password;
+    * `$SQL_HOST` with the format `host:port` for the host and optional port;
+    * `$SQL_INSTANCE` in cases where you're connecting to a specific SQL instance if `port` is not defined; and
+    * `$SQL_DATABASE` for the database name
 * **It uses a key mechanism to have multiple, different copies of the Guestbook** in a single environment.
   * Set a key by setting the `$KEY` environment variable. Be aware that different "storage backends" will have different validations for key names. Currently, both Redis and MSSQL require alphabetic characters only (no numbers, all lowercase).
 * **There are multiple storage backends**, and you can choose them by setting the corresponding environment variables for each. On initialization, a `Bootstrap()` function is called, which is often used to connect to the database (and as such, validate connectivity) as well as boostrap any required environment setting.
   * Redis bootstrap ensures there's a key with an empty value
-  * MSSQL Server bootstraps creates a database called `cache` and a table with the name of the `$KEY` environment variable
+  * MSSQL Server bootstraps creates a table with the name of the `$KEY` environment variable; the database must exist
   * Due to how storage backends work, you might need to work around how you want to save the data in the correspondent backend. For example, Redis might use its K/V store, while MSSQL might use a table with a single record which is constantly updated.
 
 PRs are welcome to add new storage backends!

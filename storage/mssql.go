@@ -3,18 +3,61 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	"net/url"
 	"strings"
 
 	_ "github.com/denisenkom/go-mssqldb"
 )
 
 type MSSQL struct {
-	connString string
-	database   *sql.DB
+	connString  string
+	sqlUsername string
+	sqlPassword string
+	sqlHost     string
+	sqlInstance string
+	sqlDatabase string
+	database    *sql.DB
 }
 
-func NewMSSQL(connectionString string) (*MSSQL, error) {
-	return &MSSQL{connString: connectionString}, nil
+func NewMSSQL(sqlUsername, sqlPassword, sqlHost, sqlInstance, sqlDatabase string) (*MSSQL, error) {
+	if sqlUsername == "" {
+		return nil, fmt.Errorf("mssql: username cannot be empty")
+	}
+
+	if sqlPassword == "" {
+		return nil, fmt.Errorf("mssql: password cannot be empty")
+	}
+
+	if sqlHost == "" {
+		return nil, fmt.Errorf("mssql: host cannot be empty")
+	}
+
+	if sqlDatabase == "" {
+		return nil, fmt.Errorf("mssql: database cannot be empty")
+	}
+
+	query := url.Values{}
+	query.Add("database", sqlDatabase)
+
+	u := url.URL{
+		Scheme:   "sqlserver",
+		User:     url.UserPassword(sqlUsername, sqlPassword),
+		Host:     sqlHost,
+		RawQuery: query.Encode(),
+	}
+
+	if sqlInstance != "" {
+		u.Path = sqlInstance
+	}
+
+	return &MSSQL{
+		connString:  u.String(),
+		sqlUsername: sqlUsername,
+		sqlPassword: sqlPassword,
+		sqlHost:     sqlHost,
+		sqlInstance: sqlInstance,
+		sqlDatabase: sqlDatabase,
+	}, nil
 }
 
 func (s *MSSQL) Bootstrap(key string) error {
@@ -30,11 +73,7 @@ func (s *MSSQL) Bootstrap(key string) error {
 		return fmt.Errorf("unable to ping SQLServer DB: %w", err)
 	}
 
-	table := `
-if not exists (select * from sys.databases where name = 'cache')
-	create database cache
-
-if not exists (select * from sysobjects where name = '{tableName}' and xtype = 'U')
+	table := `if not exists (select * from sysobjects where name = '{tableName}' and xtype = 'U')
 	create table {tableName} (
 		{tableName} varchar(max) not null
 	);
@@ -92,5 +131,23 @@ func (r *MSSQL) IsValidKey(key string) error {
 }
 
 func (r *MSSQL) ConfigString() string {
-	return "SQL Server: " + obfuscate(r.connString, 3)
+	query := url.Values{}
+	query.Add("database", r.sqlDatabase)
+
+	u := url.URL{
+		Scheme:   "sqlserver",
+		Host:     r.sqlHost,
+		RawQuery: query.Encode(),
+	}
+
+	if r.sqlInstance != "" {
+		u.Path = r.sqlInstance
+	}
+
+	return fmt.Sprintf(
+		"SQL Server: %s; user: %s; password: %s",
+		u.String(),
+		obfuscate(r.sqlUsername, 3),
+		obfuscate(r.sqlPassword, 3),
+	)
 }
