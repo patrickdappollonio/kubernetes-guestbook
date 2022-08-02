@@ -1,6 +1,6 @@
 module github.com/patrickdappollonio/redis-todo-list
 
-go 1.17
+go 1.19
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.0
