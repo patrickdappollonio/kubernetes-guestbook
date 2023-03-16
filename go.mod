@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/denisenkom/go-mssqldb v0.12.0
-	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-redis/redis/v8 v8.11.5
 )
 
