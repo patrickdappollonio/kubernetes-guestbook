@@ -86,7 +86,7 @@ jobs:
           publish_dir: ./index
 
       - name: Build and release
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
